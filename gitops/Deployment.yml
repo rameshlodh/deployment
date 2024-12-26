@@ -32,7 +32,4 @@ spec:
       port: 80
       targetPort: 80
   type: ClusterIP
-  template:
-    spec:
-      containers:
-        - image: rameshlodh/frontend:940b7db8755ad7d072f9ba42f85c3b0027e277a0
+---
