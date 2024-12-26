@@ -60,6 +60,10 @@ jobs:
         run: |
           pip install checkov
 
+      - name: Create artifact directory
+        run: |
+          mkdir -p artifact
+
       - name: Run Checkov on Infrastructure Code
         run: |
           checkov -d ./infra \
@@ -112,6 +116,10 @@ jobs:
         run: |
           curl -sfL https://github.com/aquasecurity/trivy/releases/download/v0.30.0/trivy_0.30.0_Linux-64bit.deb -o trivy.deb
           sudo dpkg -i trivy.deb
+
+      - name: Create artifact directory
+        run: |
+          mkdir -p artifact
 
       - name: Run Trivy Scan on Docker Image
         run: |
