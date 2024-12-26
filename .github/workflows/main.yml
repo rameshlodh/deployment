@@ -154,12 +154,12 @@ jobs:
         run: |
           IMAGE_TAG=${{ github.sha }}
           echo "Updating image in deployment.yml with tag: $IMAGE_TAG"
-          yq eval ".spec.template.spec.containers[0].image = \"${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_APPLICATION }}:$IMAGE_TAG\"" -i gitops/deployment.yml
+          yq eval ".spec.template.spec.containers[0].image = \"${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_APPLICATION }}:$IMAGE_TAG\"" -i gitops/Deployment.yml
 
       - name: Commit and Push Image Update to Repository
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          git add gitops/deployment.yml
+          git add gitops/Deployment.yml
           git commit -m "Update image tag in deployment.yml to $IMAGE_TAG"
           git push origin main
