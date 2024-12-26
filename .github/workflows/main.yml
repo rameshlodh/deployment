@@ -96,9 +96,8 @@ jobs:
         run: |
           IMAGE_TAG=${{ github.sha }}  # Using the commit SHA as the image tag
           echo "Building Docker image for application: ${{ secrets.DOCKER_HUB_APPLICATION }} with tag: $IMAGE_TAG"
-          docker buildx build --platform linux/amd64,linux/arm64 -t ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_APPLICATION }}:$IMAGE_TAG .
-          docker images  # Debugging: Ensure the image was built successfully
-
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_APPLICATION }}:$IMAGE_TAG .
+        
       - name: Push Docker Image
         run: |
           IMAGE_TAG=${{ github.sha }}
