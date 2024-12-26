@@ -86,18 +86,21 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-      - name: Build Docker Image
+      - name: Build Multi-Architecture Docker Image
         run: |
           IMAGE_TAG=${{ github.sha }}  # Using the commit SHA as the image tag
-          echo "Building Docker image for application: ${{ secrets.DOCKER_HUB_APPLICATION }} with tag: $IMAGE_TAG"
-          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_APPLICATION }}:$IMAGE_TAG .
-        
+          echo "Building Multi-Architecture Docker image for application: ${{ secrets.DOCKER_HUB_APPLICATION }} with tag: $IMAGE_TAG"
+          docker buildx build --platform linux/amd64,linux/arm64 -t ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_APPLICATION }}:$IMAGE_TAG .
+
       - name: Push Docker Image
         run: |
           IMAGE_TAG=${{ github.sha }}
