@@ -20,32 +20,33 @@ jobs:
         run: |
           pip install semgrep
 
+      - name: Create artifact directory
+        run: |
+          mkdir -p artifact
+
       - name: Run Semgrep Security Audit
         env:
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_TOKEN }}
         run: |
-          semgrep --config "p/security-audit" --output semgrep-security-audit-report.json
+          semgrep --config "p/security-audit" --output artifact/semgrep-security-audit-report.json
           
       - name: Run Semgrep Secrets Scan
         env:
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_TOKEN }}
         run: |
-          semgrep --config "p/secrets" --output semgrep-secrets-scan-report.json
+          semgrep --config "p/secrets" --output artifact/semgrep-secrets-scan-report.json
           
       - name: Run Semgrep CI Scan
         env:
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_TOKEN }}
         run: |
-          semgrep --config "p/ci" --output semgrep-ci-scan-report.json
+          semgrep --config "p/ci" --output artifact/semgrep-ci-scan-report.json
 
       - name: Upload Semgrep Reports as Artifacts
         uses: actions/upload-artifact@v3
         with:
           name: semgrep-reports
-          path: |
-            semgrep-security-audit-report.json
-            semgrep-secrets-scan-report.json
-            semgrep-ci-scan-report.json
+          path: artifact/*.json
 
   checkov:
     name: Checkov Security Scan
@@ -64,14 +65,14 @@ jobs:
           checkov -d ./infra \
             --framework terraform,kubernetes,cloudformation \
             --output json \
-            --output-file checkov-report.json \
+            --output-file artifact/checkov-report.json \
             --skip-check BC.PipelineMissing
 
       - name: Upload Checkov Report as Artifact
         uses: actions/upload-artifact@v3
         with:
           name: checkov-reports
-          path: checkov-report.json
+          path: artifact/checkov-report.json
 
   docker-build-push:
     name: Docker Build and Push to Docker Hub
@@ -116,10 +117,10 @@ jobs:
         run: |
           IMAGE_TAG=${{ github.sha }}
           echo "Scanning Docker image: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_APPLICATION }}:$IMAGE_TAG"
-          trivy image --exit-code 1 --severity HIGH,CRITICAL ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_APPLICATION }}:$IMAGE_TAG
+          trivy image --exit-code 1 --severity HIGH,CRITICAL ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_APPLICATION }}:$IMAGE_TAG > artifact/trivy-report.json
 
       - name: Upload Trivy Scan Report
         uses: actions/upload-artifact@v3
         with:
           name: trivy-reports
-          path: trivy-report.json
+          path: artifact/trivy-report.json
