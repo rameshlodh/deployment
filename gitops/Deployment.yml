@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: nginx
-          image: rameshlodh/frontend:940b7db8755ad7d072f9ba42f85c3b0027e277a0
+          image: rameshlodh/frontend:36c9d5f00e29cde77f56f0b1166d54a617934ae9
           ports:
             - containerPort: 80
 ---
@@ -32,4 +32,13 @@ spec:
       port: 80
       targetPort: 80
   type: ClusterIP
+  template:
+    spec:
+      containers:
+        - image: rameshlodh/frontend:36c9d5f00e29cde77f56f0b1166d54a617934ae9
 ---
+spec:
+  template:
+    spec:
+      containers:
+        - image: rameshlodh/frontend:36c9d5f00e29cde77f56f0b1166d54a617934ae9
