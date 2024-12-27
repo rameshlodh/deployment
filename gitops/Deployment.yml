@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
         - name: nginx
-          image: rameshlodh/frontend:1d4924c2884efda53fe14c56ce3ab48594a97408
+          image: rameshlodh/frontend:dd670aaefa40f32a2464791b84c908dc224344e3
           ports:
             - containerPort: 80
